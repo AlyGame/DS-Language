@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DS# - Documentation</title>
+    <style>
+        .pdf-canvas {
+            margin-bottom: 10px; /* Adjust this value to control the spacing between pages */
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.js"></script>
+</head>
+<body>
+    <div id="pdfContainer"></div>
+
+    <script>
+        // URL of the PDF file you want to display
+        const pdfUrl = 'docs.pdf';
+
+        // Initialize the PDF.js library
+        const pdfjsLib = window['pdfjs-dist/build/pdf'];
+
+        // Set the path to the worker files
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.worker.min.js';
+
+        // Function to render all pages
+        function renderAllPages(pdfDoc, container) {
+            const numPages = pdfDoc.numPages;
+            for (let pageNumber = 1; pageNumber <= numPages; pageNumber++) {
+                pdfDoc.getPage(pageNumber).then(page => {
+                    const canvas = document.createElement('canvas');
+                    canvas.classList.add('pdf-canvas'); // Add a class to style the canvas
+                    container.appendChild(canvas);
+                    const context = canvas.getContext('2d');
+                    
+                    // Adjust the scale factor to make the page larger (2.0 for double size)
+                    const scale = 2.0;
+                    const viewport = page.getViewport({ scale });
+
+                    // Adjust the canvas size to fit the scaled page
+                    canvas.width = viewport.width;
+                    canvas.height = viewport.height;
+
+                    const renderContext = {
+                        canvasContext: context,
+                        viewport: viewport,
+                    };
+
+                    // Render the page on the canvas
+                    page.render(renderContext);
+                });
+            }
+        }
+
+        // Fetch the PDF document
+        pdfjsLib.getDocument(pdfUrl).promise.then(pdfDoc => {
+            renderAllPages(pdfDoc, document.getElementById('pdfContainer'));
+        });
+    </script>
+</body>
+</html>
