@@ -1,5 +1,7 @@
 # Installation
 
+It's mandatory to use C/CPP file.
+
 ### For Linux / macOS:
 
 For install:
@@ -13,6 +15,20 @@ For uninstall:
 ```bash
 sudo make remove
 ```
+For run:
+
+```bash
+sudo apt install make
+```
+
+```bash
+make test
+```
+
+```bash
+./test
+```
+
 
 ### For Windows:
 
